@@ -1,7 +1,38 @@
 
-main_container =  document.querySelector('.note_container');
 
-function save_to_local(checker,title,data)
+/////////////////// getting the note container/////////////////
+main_container =  document.querySelector('.note_container'); 
+///////////////////////fetching the value on startup////////////////
+fetchnote_value = localStorage.getItem('fetchnote');
+
+if(fetchnote_value=='true')
+{
+   
+    document.getElementById('fetchnote').checked = true;
+    saved_notes_display()
+    
+   
+}
+else
+{
+    document.getElementById('fetchnote').checked = false;
+
+}
+function switch_state()
+{
+    if(!document.getElementById('fetchnote').checked)
+    {
+        
+        localStorage.setItem('fetchnote',false);
+        
+    }
+    else
+    {
+        localStorage.setItem('fetchnote',true);
+    }
+    
+}
+function save_to_local(checker,title,data) //this function will save data to local storage
 {
     if(checker)
     {
@@ -24,7 +55,7 @@ function save_to_local(checker,title,data)
         }
     }
 }
-function error_message_shower(title,data)
+function error_message_shower(title,data) ////////////error message shower
 {   
     if(title)
     {
@@ -48,7 +79,8 @@ function error_message_shower(title,data)
    
     
 }
-function data_validator() //main function
+//main function which check for the value and wil raise error if founc empty
+function data_validator() 
 {
     
     title_el = document.getElementById("note_title").value;
@@ -71,6 +103,7 @@ function data_validator() //main function
     }
 
 }
+//////////////add note fuction ////////////////////////
 function add_note(title_el,data_el)
 {
     notes_count=document.querySelectorAll('.note').length; // returns total created notes
@@ -95,8 +128,10 @@ function add_note(title_el,data_el)
     </div>`;
 
     document.getElementById(`${notes_count+1}`).innerHTML=html;  //adding the html for the proper view 
+    alert_shower("success","Note Added Succesfully")
    
 }
+//////////////////////the delete function. This will remove note from dom and also from localstorage if the note is previously saved in local storage ////////////////////
 function notedelete(id,title)
 {   
   
@@ -119,21 +154,50 @@ function notedelete(id,title)
         
     });
     localStorage.setItem('notes',JSON.stringify(notes_array));
+    alert_shower("success","No deleted Succesfully")
 }
-// saved_notes_display()
-// {
-//     let noteselm = localStorage.getItem('notes');
-//     if(notes==null)
-//     {
-//         notesObj=[];
-//     }
-//     else
-//     {
-//         notesObj = JSON.parse(notes);
-//     }
-// }
-
-//////////////////////////////////////text transition/////////////////////////////////////////
+///////////////////////saved notes display//////////////////////////
+function saved_notes_display()
+{
+    let noteselm = localStorage.getItem('notes');
+    if(noteselm==null)
+    {
+        alert_shower("danger","No Notes Found")
+        
+    }
+    else
+    {
+        notesObj = JSON.parse(noteselm);
+        notesObj.forEach(function note_data_extractor(note,ind)
+        {
+            for(var title in note)
+                {
+                    data = note[title];
+                    add_note(title,data);
+                }
+        });
+    }
+}
+//////////////////this will clear your local storage////////////////////
+function localStorage_clear()
+{
+    localStorage.clear();
+    alert_shower("danger","Local Storage Cleared")
+}
+///////////////////bootstrap alert shower/////////////////////////////
+function alert_shower(type,msg)
+{
+    el = document.getElementById('alert');
+        el.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+        <strong>${msg}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        `
+}
+//////////////////////////////////////text transition using anime.js/////////////////////////////////////////
 
 var textWrapper = document.querySelector('.ml3');
 textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
@@ -144,7 +208,7 @@ anime.timeline({loop: true})
     opacity: [0,1],
     easing: "easeInOutQuad",
     duration: 2250,
-    delay: (el, i) => 150 * (i+1)
+    delay: (el, i) => 50 * (i+1)
   }).add({
     targets: '.ml3',
     opacity: 0,
@@ -152,3 +216,4 @@ anime.timeline({loop: true})
     easing: "easeOutExpo",
     delay: 1000
   });
+

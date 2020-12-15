@@ -116,14 +116,14 @@ function add_note(title_el,data_el)
     main_container = document.getElementById('nt');
     main_container.appendChild(note_card);    
     html = `
-    <div class="card text-white bg-dark mx-1 mb-3" id="${notes_count+1}" style=" max-width: 18rem;">
+    <div class="card text-white bg-dark mx-1 mb-3" id="${notes_count+1}" style=" max-width: 18rem; min-width: 18rem;">
         <div class="card-header row container-fluid justify-content-between" style="margin: 0px !important">
         Note: ${notes_count+1} <i" onclick="notedelete(${notes_count+1},'${title_el}')"style="padding: 3px 0 0 0; cursor:pointer;" class="fa fa-trash" aria-hidden="true"></i>
     
         </div>
         <div class="card-body">
             <h5 class="card-title">${title_el}</h5>
-            <p class="card-text">${data_el.slice(0,25)}...</p>
+            <p class="card-text">${data_el.slice(0,30)}...</p>
         </div>
     </div>`;
 
@@ -136,7 +136,7 @@ function notedelete(id,title)
 {   
   
     el=document.getElementById(id);
-    note_title = el.children[0].children[1].children[0].innerHTML;
+    // note_title = el.children[0].children[1].children[0].innerHTML;
     el.remove();
     let notes_array =  JSON.parse(localStorage.getItem('notes'));
     temp = notes_array;
@@ -159,25 +159,51 @@ function notedelete(id,title)
 ///////////////////////saved notes display//////////////////////////
 function saved_notes_display()
 {
-    let noteselm = localStorage.getItem('notes');
-    if(noteselm==null)
-    {
+    let noteselm = JSON.parse(localStorage.getItem('notes'));
+    all_notes_in_dom = document.getElementsByClassName('card-title');
+
+    all_note_in_dom = Array.from(all_notes_in_dom);
+    all_dom_notes_title = [];
+    all_note_in_dom.forEach(function(note,ind)
+        {
+            all_dom_notes_title.push(note.innerHTML);
+        });
+    
+    if(!noteselm.length)
+    { 
+        
         alert_shower("danger","No Notes Found")
         
     }
     else
     {
-        notesObj = JSON.parse(noteselm);
+        notesObj =  noteselm
+        
+        
         notesObj.forEach(function note_data_extractor(note,ind)
         {
+            
             for(var title in note)
                 {
-                    data = note[title];
-                    add_note(title,data);
+                    all_dom_notes_title.forEach(function note_exist_in_dom_checker(domtitle,ind)
+                    {
+                       
+                        if(title!=domtitle)
+                        {
+                            
+                        }
+                        data = note[title];
+                        add_note(title,data);
+                    });
+                    
                 }
         });
+        
+
+        
     }
 }
+
 //////////////////this will clear your local storage////////////////////
 function localStorage_clear()
 {

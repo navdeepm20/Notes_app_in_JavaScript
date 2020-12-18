@@ -116,7 +116,7 @@ function add_note(title_el,data_el)
     main_container = document.getElementById('nt');
     main_container.appendChild(note_card);    
     html = `
-    <div class="card text-white bg-dark mx-1 mb-3" id="${notes_count+1}" style=" max-width: 18rem; min-width: 18rem;">
+    <div class="card text-white bg-dark mx-1 mb-3" id="${notes_count+1}" style="    max-width: 18rem; min-width: 18rem;">
         <div class="card-header row container-fluid justify-content-between" style="margin: 0px !important">
         Note: ${notes_count+1} <i" onclick="notedelete(${notes_count+1},'${title_el}')"style="padding: 3px 0 0 0; cursor:pointer;" class="fa fa-trash" aria-hidden="true"></i>
     
@@ -186,17 +186,19 @@ function saved_notes_display()
             for(var title in note)
                 {
                     if(all_dom_notes_title.length)
-                    all_dom_notes_title.forEach(function note_exist_in_dom_checker(domtitle,ind)
-                    {
-
-                       
-                        if(title!=domtitle)
+                    {   all_dom_notes_title.forEach(function note_exist_in_dom_checker   (domtitle,ind)
                         {
-                            data = note[title];
-                            add_note(title,data);
-                        }
+
                         
-                    });
+                            if(title!=domtitle)
+                            {
+                                data = note[title];
+                                add_note(title,data);
+
+                            }
+                                                   
+                        });
+                    }
                     else{
 
                         data = note[title];
@@ -229,6 +231,28 @@ function alert_shower(type,msg)
         </button>
       </div>
         `
+}
+////////////////////////////////search function///////////////////////////////
+
+function note_search(e)
+{
+    input = document.getElementsByClassName('note-search')[0].value.toLowerCase();
+    cards = document.getElementsByClassName('card-title');
+    
+    for(i=0;i<cards.length;i++)
+    {
+        if(cards[i].innerHTML.toLowerCase().indexOf(input) > -1)
+        {
+            cards[i].parentNode.parentNode.style.display="";
+        }
+        else
+        {
+            cards[i].parentNode.parentNode.style.display="none";
+        }
+
+    }
+
+    
 }
 //////////////////////////////////////text transition using anime.js/////////////////////////////////////////
 

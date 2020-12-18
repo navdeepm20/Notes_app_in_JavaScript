@@ -179,22 +179,29 @@ function saved_notes_display()
     {
         notesObj =  noteselm
         
-        
         notesObj.forEach(function note_data_extractor(note,ind)
         {
             
+            
             for(var title in note)
                 {
+                    if(all_dom_notes_title.length)
                     all_dom_notes_title.forEach(function note_exist_in_dom_checker(domtitle,ind)
                     {
+
                        
                         if(title!=domtitle)
                         {
-                            
+                            data = note[title];
+                            add_note(title,data);
                         }
+                        
+                    });
+                    else{
+
                         data = note[title];
                         add_note(title,data);
-                    });
+                    }
                     
                 }
         });

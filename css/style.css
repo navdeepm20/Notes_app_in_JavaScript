@@ -1,0 +1,18 @@
+footer
+{
+    min-height: 70px;
+    display: flex;
+    background-color: #343a40!important;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    
+}
+button
+{
+    margin-bottom: 5px;
+}
+.main-container
+{
+    min-height: 100vh;
+}

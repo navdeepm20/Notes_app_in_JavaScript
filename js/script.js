@@ -1,276 +1,242 @@
-
-
 /////////////////// getting the note container/////////////////
-main_container =  document.querySelector('.note_container'); 
+main_container = document.querySelector(".note_container");
 ///////////////////////fetching the value on startup////////////////
-fetchnote_value = localStorage.getItem('fetchnote');
+fetchnote_value = localStorage.getItem("fetchnote");
 
-if(fetchnote_value=='true')
-{
-   
-    document.getElementById('fetchnote').checked = true;
-    saved_notes_display()
-    
-   
+if (fetchnote_value == "true") {
+  document.getElementById("fetchnote").checked = true;
+  saved_notes_display();
+} else {
+  document.getElementById("fetchnote").checked = false;
 }
-else
-{
-    document.getElementById('fetchnote').checked = false;
+function switch_state() {
+  if (!document.getElementById("fetchnote").checked) {
+    localStorage.setItem("fetchnote", false);
+  } else {
+    localStorage.setItem("fetchnote", true);
+  }
+}
+function save_to_local(checker, title, data) {
+  //this function will save data to local storage
+  if (checker) {
+    let dict = {};
+    dict[title] = data;
 
-}
-function switch_state()
-{
-    if(!document.getElementById('fetchnote').checked)
-    {
-        
-        localStorage.setItem('fetchnote',false);
-        
-    }
-    else
-    {
-        localStorage.setItem('fetchnote',true);
-    }
-    
-}
-function save_to_local(checker,title,data) //this function will save data to local storage
-{
-    if(checker)
-    {
+    let stored_notes = JSON.parse(localStorage.getItem("notes"));
 
-        let dict={};
-        dict[title]=data;
-        
-        let stored_notes  = JSON.parse(localStorage.getItem('notes'));
-        
-        if(stored_notes!=null)
-        {
-            stored_notes.push(dict);
-            localStorage.setItem('notes',JSON.stringify(stored_notes))
-        }
-        else
-        {
-            let notes_array = []
-            notes_array.push(dict)
-            localStorage.setItem('notes',JSON.stringify(notes_array))
-        }
+    if (stored_notes != null) {
+      stored_notes.push(dict);
+      localStorage.setItem("notes", JSON.stringify(stored_notes));
+    } else {
+      let notes_array = [];
+      notes_array.push(dict);
+      localStorage.setItem("notes", JSON.stringify(notes_array));
     }
+  }
 }
-function error_message_shower(title,data) ////////////error message shower
-{   
-    if(title)
-    {
-        terror = document.getElementById("title_error");
-        terror.innerHTML=title;
-        terror.setAttribute("style","color: red; font-size: 12px;");
-        t_el = document.getElementById('note_title').setAttribute('style','border: 1px solid red;');
-    }
-  
-    if(data)
-    {
-        
-        derror = document.getElementById("data_error");
-        
-        derror.innerHTML=data;
-        derror.setAttribute("style","color: red; font-size: 12px;");
-        d_el = document.getElementById('note_data').setAttribute('style','border: 1px solid red;')
-    }
-    
-   
-   
-    
+function error_message_shower(title = 0, data = 0) {
+  ////////////error message shower
+  if (title) {
+    terror = document.getElementById("title_error");
+    terror.innerHTML = title;
+    terror.setAttribute("style", "color: red; font-size: 12px;");
+    t_el = document
+      .getElementById("note_title")
+      .setAttribute("style", "border: 1px solid red;");
+  }
+
+  if (data) {
+    derror = document.getElementById("data_error");
+
+    derror.innerHTML = data;
+    derror.setAttribute("style", "color: red; font-size: 12px;");
+    d_el = document
+      .getElementById("note_data")
+      .setAttribute("style", "border: 1px solid red;");
+  }
 }
 //main function which check for the value and wil raise error if founc empty
-function data_validator() 
-{
-    
-    title_el = document.getElementById("note_title").value;
-    data_el = document.getElementById("note_data").value;
-    storenote = document.getElementById("storenote").checked;
-    document.getElementById("note_title")
-    
+function data_validator() {
+  title_el = document.getElementById("note_title").value;
+  data_el = document.getElementById("note_data").value;
+  storenote = document.getElementById("storenote").checked;
+  document.getElementById("note_title");
 
-    if(title_el=="")
-    {
-        error_message_shower("Note Title Can't Empty",false)
-    }
-    if(data_el=="")
-    {
-        error_message_shower(false,"Note Data Can't be Empty");
-    }
-    else
-    {add_note(title_el,data_el);
-    save_to_local(storenote,title_el,data_el);
-    }
-
+  if (title_el == "") {
+    error_message_shower("Note Title Can't Empty", false);
+  }
+  if (data_el == "") {
+    error_message_shower(false, "Note Data Can't be Empty");
+  } else {
+    add_note(title_el, data_el);
+    save_to_local(storenote, title_el, data_el);
+  }
 }
 //////////////add note fuction ////////////////////////
-function add_note(title_el,data_el)
-{
-    notes_count=document.querySelectorAll('.note').length; // returns total created notes
-    
+function add_note(title_el, data_el) {
+  notes_count = document.querySelectorAll(".note").length; // returns total created notes
 
-    note_card = document.createElement('div')
-    note_card.className="note";  
-    note_card.id = `${notes_count+1}`; //for giving unique id to every note
-  
-    main_container = document.getElementById('nt');
-    main_container.appendChild(note_card);    
-    html = `
-    <div class="card text-white bg-dark mx-1 mb-3" id="${notes_count+1}" style="    max-width: 18rem; min-width: 18rem;">
+  note_card = document.createElement("div");
+  note_card.className = "note";
+  note_card.id = `${notes_count + 1}`; //for giving unique id to every note
+
+  main_container = document.getElementById("nt");
+  main_container.appendChild(note_card);
+  html = `
+    <div class="card text-white bg-dark mx-1 mb-3" id="${
+      notes_count + 1
+    }" style="    max-width: 18rem; min-width: 18rem;">
         <div class="card-header row container-fluid justify-content-between" style="margin: 0px !important">
-        Note: ${notes_count+1} <i" onclick="notedelete(${notes_count+1},'${title_el}')"style="padding: 3px 0 0 0; cursor:pointer;" class="fa fa-trash" aria-hidden="true"></i>
+        Note: ${notes_count + 1} <i" onclick="notedelete(${
+    notes_count + 1
+  },'${title_el}')"style="padding: 3px 0 0 0; cursor:pointer;" class="fa fa-trash" aria-hidden="true"></i>
     
         </div>
         <div class="card-body">
             <h5 class="card-title">${title_el}</h5>
-            <p class="card-text">${data_el.slice(0,30)}...</p>
+            <p class="card-text">${data_el.slice(0, 30)}...</p>
         </div>
     </div>`;
 
-    document.getElementById(`${notes_count+1}`).innerHTML=html;  //adding the html for the proper view 
-    alert_shower("success","Note Added Succesfully")
-   
+  document.getElementById(`${notes_count + 1}`).innerHTML = html; //adding the html for the proper view
+  alert_shower("success", "Note Added Succesfully");
 }
 //////////////////////the delete function. This will remove note from dom and also from localstorage if the note is previously saved in local storage ////////////////////
-function notedelete(id,title)
-{   
-  
-    el=document.getElementById(id);
-    // note_title = el.children[0].children[1].children[0].innerHTML;
-    el.remove();
-    let notes_array =  JSON.parse(localStorage.getItem('notes'));
-    temp = notes_array;
-    temp.forEach(function key_popper(ab,ind){
-        for(var key in ab)
-        {
-            if(key==title)
-            {
-                notes_array.splice(ind,1);
-                        
-            }
-            break;
-        }
-        return false
-        
-    });
-    localStorage.setItem('notes',JSON.stringify(notes_array));
-    alert_shower("success","No deleted Succesfully")
+function notedelete(id, title) {
+  el = document.getElementById(id);
+  // note_title = el.children[0].children[1].children[0].innerHTML;
+  el.remove();
+  let notes_array = JSON.parse(localStorage.getItem("notes"));
+  temp = notes_array;
+  temp.forEach(function key_popper(ab, ind) {
+    for (var key in ab) {
+      if (key == title) {
+        notes_array.splice(ind, 1);
+      }
+      break;
+    }
+    return false;
+  });
+  localStorage.setItem("notes", JSON.stringify(notes_array));
+  alert_shower("success", "No deleted Succesfully");
 }
 ///////////////////////saved notes display//////////////////////////
-function saved_notes_display()
-{
-    let noteselm = JSON.parse(localStorage.getItem('notes'));
-    all_notes_in_dom = document.getElementsByClassName('card-title');
+function saved_notes_display() {
+  let noteselm = JSON.parse(localStorage.getItem("notes"));
+  all_notes_in_dom = document.getElementsByClassName("card-title");
 
-    all_note_in_dom = Array.from(all_notes_in_dom);
-    all_dom_notes_title = [];
-    all_note_in_dom.forEach(function(note,ind)
-        {
-            all_dom_notes_title.push(note.innerHTML);
-        });
-    
-    if(!noteselm.length)
-    { 
-        
-        alert_shower("danger","No Notes Found")
-        
-    }
-    else
-    {
-        notesObj =  noteselm
-        
-        notesObj.forEach(function note_data_extractor(note,ind)
-        {
-            
-            
-            for(var title in note)
-                {
-                    if(all_dom_notes_title.length)
-                    {   all_dom_notes_title.forEach(function note_exist_in_dom_checker   (domtitle,ind)
-                        {
+  all_note_in_dom = Array.from(all_notes_in_dom);
+  all_dom_notes_title = [];
+  all_note_in_dom.forEach(function (note, ind) {
+    all_dom_notes_title.push(note.innerHTML);
+  });
 
-                        
-                            if(title!=domtitle)
-                            {
-                                data = note[title];
-                                add_note(title,data);
+  if (!noteselm.length) {
+    alert_shower("danger", "No Notes Found");
+  } else {
+    notesObj = noteselm;
 
-                            }
-                                                   
-                        });
-                    }
-                    else{
-
-                        data = note[title];
-                        add_note(title,data);
-                    }
-                    
-                }
-        });
-        
-
-        
-    }
+    notesObj.forEach(function note_data_extractor(note, ind) {
+      for (var title in note) {
+        let chk = 0;
+        if (!all_dom_notes_title.length) {
+          data = note[title];
+          add_note(title, data);
+        }
+      }
+    });
+  }
+  if(all_dom_notes_title.length)
+  {
+    alert_shower("success", "Notes Already Added");
+  }
 }
+function unique_notes_verifier() {
+  input = document.getElementById("note_title").value;
+  /////////////////////verify if it is in dom///////////////////
+  cardsTitle = document.getElementsByClassName("card-title");
 
+  cardsTitle_li = [];
+  Array.from(cardsTitle).forEach(function (element, ind) {
+    cardsTitle_li.push(element.innerHTML);
+  });
+  for (let j = 0; j < cardsTitle_li.length; j++) {
+    if (input.toLowerCase() == cardsTitle_li[j].toLowerCase()) {
+      error_message_shower("Title Already Exist");
+    } else {
+      terror = document.getElementById("title_error");
+      terror.innerHTML = "";
+      terror.setAttribute("style", "color: red; font-size: 12px;");
+      t_el = document
+        .getElementById("note_title")
+        .setAttribute("style", "border: 1px solid green;");
+    }
+  }
+}
 //////////////////this will clear your local storage////////////////////
-function localStorage_clear()
-{
-    localStorage.clear();
-    alert_shower("danger","Local Storage Cleared")
+function localStorage_clear() {
+  localStorage.clear();
+  alert_shower("danger", "Local Storage Cleared");
 }
 ///////////////////bootstrap alert shower/////////////////////////////
-function alert_shower(type,msg)
-{
-    el = document.getElementById('alert');
-        el.innerHTML = `
+function alert_shower(type, msg) {
+  el = document.getElementById("alert");
+  el.innerHTML = `
         <div class="alert alert-${type} alert-dismissible fade show" role="alert">
         <strong>${msg}</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">&times;</span>
         </button>
       </div>
-        `
+        `;
+  el.style.display = "";
+  seconds = 1;
+
+  let interval_id = setInterval(function () {
+    if (seconds == 5) {
+      el.style.display = "none";
+      clearInterval(interval_id);
+    } else {
+      seconds += 1;
+    }
+  }, 1000);
 }
 ////////////////////////////////search function///////////////////////////////
 
-function note_search(e)
-{
-    input = document.getElementsByClassName('note-search')[0].value.toLowerCase();
-    cards = document.getElementsByClassName('card-title');
-    
-    for(i=0;i<cards.length;i++)
-    {
-        if(cards[i].innerHTML.toLowerCase().indexOf(input) > -1)
-        {
-            cards[i].parentNode.parentNode.style.display="";
-        }
-        else
-        {
-            cards[i].parentNode.parentNode.style.display="none";
-        }
+function note_search(e) {
+  input = document.getElementsByClassName("note-search")[0].value.toLowerCase();
+  cards = document.getElementsByClassName("card-title");
 
+  for (i = 0; i < cards.length; i++) {
+    if (cards[i].innerHTML.toLowerCase().indexOf(input) > -1) {
+      cards[i].parentNode.parentNode.style.display = "";
+      console.log(cards[i].parentNode.parentNode);
+    } else {
+      cards[i].parentNode.parentNode.style.display = "none";
     }
-
-    
+  }
 }
 //////////////////////////////////////text transition using anime.js/////////////////////////////////////////
 
-var textWrapper = document.querySelector('.ml3');
-textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+var textWrapper = document.querySelector(".ml3");
+textWrapper.innerHTML = textWrapper.textContent.replace(
+  /\S/g,
+  "<span class='letter'>$&</span>"
+);
 
-anime.timeline({loop: true})
+anime
+  .timeline({ loop: true })
   .add({
-    targets: '.ml3 .letter',
-    opacity: [0,1],
+    targets: ".ml3 .letter",
+    opacity: [0, 1],
     easing: "easeInOutQuad",
     duration: 2250,
-    delay: (el, i) => 50 * (i+1)
-  }).add({
-    targets: '.ml3',
+    delay: (el, i) => 50 * (i + 1),
+  })
+  .add({
+    targets: ".ml3",
     opacity: 0,
     duration: 1000,
     easing: "easeOutExpo",
-    delay: 1000
+    delay: 1000,
   });
-

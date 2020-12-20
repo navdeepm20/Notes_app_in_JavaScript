@@ -15,7 +15,7 @@
   <body style="padding-right: 0px !important;">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">NoteFizz</a>
+        <a class="navbar-brand" href="/">NoteFizz</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -38,20 +38,20 @@
       </nav>
 
       <div id="alert"></div>
-      <div class="main-container mx-auto" style="max-width: 60%; box-sizing: border-box;">
+      <div class="main-container mx-auto">
 
           <h2 class=" ml3 mt-5 mb-2"><span class="letters">Welcome to NoteFizz App</span></h2>
           
           <form>
 
             <div class="form-group">
-              <div class="title-area my-4" style="height: 40px;">
+              <div class="title-area my-4">
 
-                <input  type="text" onblur="unique_notes_verifier()" class="form-control mt-3" id="note_title" placeholder="Note Title" style="border: 1px solid black;">
+                <input  type="text" onkeyup="unique_notes_verifier()" class="form-control mt-3" id="note_title" placeholder="Note Title">
                 <p id="title_error"></p>
               </div>
-              <div class="data-area my-4" style=" min-height: 200px !important;">
-                <textarea class="form-control" id="note_data" rows="7" placeholder="Your Note" style="resize: none; border: 1px solid black;"></textarea>
+              <div class="data-area my-4">
+                <textarea class="form-control" id="note_data" rows="7" placeholder="Your Note"></textarea>
                 <p id="data_error"></p>
               </div>
             </div>
@@ -63,13 +63,13 @@
               <input type="checkbox" class="custom-control-input" id="fetchnote" onclick="switch_state()">
               <label class="custom-control-label" for="fetchnote">Fetch Saved Notes on Startup</label>
             </div>
-            <button type="button" class="btn btn-dark" onclick="data_validator()">Add Note</button>
+            <button type="button" id="addbtn" class="btn btn-dark" onclick="data_validator()">Add Note</button>
             <button type="button" class="btn btn-dark" onclick="saved_notes_display()">Fetch Saved Notes</button>
             <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" >Clear Local Storage</button>
           </form>
-          <div class="note_container my-5" style="min-width: 100%; box-sizing: border-box;" id="nc">
+          <div class="note_container my-5" id="nc">
             <h4>Your Notes</h4>
-            <div class="notes d-flex flex-wrap justify-content-between" style="width: 100%;box-sizing: border-box;"id="nt">
+            <div class="notes d-flex flex-wrap justify-content-start"id="nt">
 
             </div>
           </div>

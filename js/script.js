@@ -1,5 +1,7 @@
 /////////////////// getting the note container/////////////////
 main_container = document.querySelector(".note_container");
+document.getElementById("storenote").checked=true;
+document.getElementById("storenote").disabled=true;
 ///////////////////////fetching the value on startup////////////////
 fetchnote_value = localStorage.getItem("fetchnote");
 
@@ -87,9 +89,11 @@ function add_note(title_el, data_el) {
       notes_count + 1
     }" style="    max-width: 18rem; min-width: 18rem;">
         <div class="card-header row container-fluid justify-content-between" style="margin: 0px !important">
-        Note: ${notes_count + 1} <i" onclick="notedelete(${
+        Note: ${notes_count + 1} 
+        <i class="fa fa-pencil-square-o" onclick="edit_note(${notes_count + 1})" aria-hidden="true"></i>
+        <i" onclick="notedelete(${
     notes_count + 1
-  },'${title_el}')"style="padding: 3px 0 0 0; cursor:pointer;" class="fa fa-trash" aria-hidden="true"></i>
+  },'${title_el}')"class="fa fa-trash" aria-hidden="true"></i>
     
         </div>
         <div class="card-body">
@@ -161,8 +165,9 @@ function unique_notes_verifier() {
     cardsTitle_li.push(element.innerHTML);
   });
   for (let j = 0; j < cardsTitle_li.length; j++) {
-    if (input.toLowerCase() == cardsTitle_li[j].toLowerCase()) {
+    if (cardsTitle_li[j].toLowerCase().indexOf(input.toLowerCase()) > -1) {
       error_message_shower("Title Already Exist");
+      document.getElementById("addbtn").disabled=true;
     } else {
       terror = document.getElementById("title_error");
       terror.innerHTML = "";
@@ -170,6 +175,8 @@ function unique_notes_verifier() {
       t_el = document
         .getElementById("note_title")
         .setAttribute("style", "border: 1px solid green;");
+        document.getElementById("addbtn").disabled=false;
+      
     }
   }
 }
@@ -215,6 +222,19 @@ function note_search(e) {
       cards[i].parentNode.parentNode.style.display = "none";
     }
   }
+}
+
+function edit_note(id)
+{
+  title = document.getElementById("note_title");
+  data = document.getElementById("note_data");
+  note = document.getElementById(id).children[0].children[1];
+  title.value=note.children[0].innerText;
+  data.value = note.children[1].innerText;
+  console.log(id)
+
+
+
 }
 //////////////////////////////////////text transition using anime.js/////////////////////////////////////////
 

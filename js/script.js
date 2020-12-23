@@ -70,8 +70,9 @@ function data_validator() {
   if (data_el == "") {
     error_message_shower(false, "Note Data Can't be Empty");
   } else {
-    add_note(title_el, data_el);
-    save_to_local(storenote, title_el, data_el);
+    if(unique_notes_verifier())
+    {add_note(title_el, data_el);
+    save_to_local(storenote, title_el, data_el);}
   }
 }
 //////////////add note fuction ////////////////////////
@@ -156,29 +157,46 @@ function saved_notes_display() {
   }
 }
 function unique_notes_verifier() {
+  
   input = document.getElementById("note_title").value;
-  /////////////////////verify if it is in dom///////////////////
-  cardsTitle = document.getElementsByClassName("card-title");
-
-  cardsTitle_li = [];
-  Array.from(cardsTitle).forEach(function (element, ind) {
-    cardsTitle_li.push(element.innerHTML);
-  });
-  for (let j = 0; j < cardsTitle_li.length; j++) {
-    if (cardsTitle_li[j].toLowerCase().indexOf(input.toLowerCase()) > -1) {
-      error_message_shower("Title Already Exist");
-      document.getElementById("addbtn").disabled=true;
-    } else {
+  
+    /////////////////////verify if it is in dom///////////////////
+  let noteselm = JSON.parse(localStorage.getItem("notes"));
+  try
+  {
+    noteselm.forEach(function note_data_extractor(note, ind) {
+      for (var title in note) 
+      {
+              
+          if(title.toLowerCase()==input.toLowerCase())
+          {
+            
+            error_message_shower("Title Already Exist");
+            throw "Title Already Exist"
+            
+           
+          }
+      }
+      });
       terror = document.getElementById("title_error");
-      terror.innerHTML = "";
-      terror.setAttribute("style", "color: red; font-size: 12px;");
-      t_el = document
-        .getElementById("note_title")
-        .setAttribute("style", "border: 1px solid green;");
-        document.getElementById("addbtn").disabled=false;
-      
-    }
+    
+    terror.innerHTML = "";
+    terror.setAttribute("style", "color: red; font-size: 12px;");
+    t_el = document
+      .getElementById("note_title")
+      .setAttribute("style", "border: 1px solid green;");
+    document
+      .getElementById("note_data")
+      .setAttribute("style", "border: 1px solid green;");
+     
+    return true;
   }
+  catch(err)
+  {
+        return false;
+  }
+    
+    
 }
 //////////////////this will clear your local storage////////////////////
 function localStorage_clear() {
@@ -227,12 +245,37 @@ function note_search(e) {
 function edit_note(id)
 {
   title = document.getElementById("note_title");
+  
   data = document.getElementById("note_data");
+  
   note = document.getElementById(id).children[0].children[1];
+  
   title.value=note.children[0].innerText;
   data.value = note.children[1].innerText;
-  console.log(id)
+  
+  addbtn = document.getElementById("addbtn");
+ 
+  savebtn = document.createElement('button');
+  savebtn.innerHTML="Save Note"
+  savebtn.setAttribute('id',"savebtn")
+  savebtn.setAttribute('class',"btn btn-dark")
+  savebtn.setAttribute('onclick',"edit_save()")
+  addbtn.replaceWith(savebtn);
+  
+  
+ 
+  
 
+}
+function edit_save()
+{
+  oldnote = document.getElementById(id).children[0];
+  title = document.getElementById("note_title").value;
+  
+  data = document.getElementById("note_data").value;
+  let noteselm = JSON.parse(localStorage.getItem("notes"));
+  console.log(noteselm)
+  savebtn.replaceWith(addbtn)
 
 
 }

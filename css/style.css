@@ -57,6 +57,10 @@ button
 {
     margin-left: 8.5rem;
 }
+.fa-eye
+{
+    margin-left: 8.5rem;
+}
 @media screen and (max-width: 900px)
 {
     .main-container

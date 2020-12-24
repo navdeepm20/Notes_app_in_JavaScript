@@ -1,0 +1,22 @@
+---------------------NoteFizz v2.0 full --------------------------------
+
+Added:
+    Edit Note functionality added.
+    Note will be saved to local storage by default.
+    search functionality added.
+    note view functionality added.
+
+Removed:
+    user can't toggle (save notes to localstorage ) option.
+
+Depricated:
+    none
+
+Bugs Fixes: 
+    All known bugs fixed.
+
+Security:
+    none
+
+Author/Developer:
+    Navdeep Mishra

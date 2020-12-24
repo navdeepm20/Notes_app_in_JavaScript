@@ -2,18 +2,26 @@
 main_container = document.querySelector(".note_container");
 
 ////////////////making storenote as a default and unchangeble option/////////////////
-document.getElementById("storenote").checked=true;
-document.getElementById("storenote").disabled=true;
+if(document.getElementById("storenote"))
+{
+  document.getElementById("storenote").checked=true;
+  document.getElementById("storenote").disabled=true;
+}
+
 ///////////////////////fetching the value on startup////////////////
 fetchnote_value = localStorage.getItem("fetchnote");
 
-if (fetchnote_value == "true") {
-  document.getElementById("fetchnote").checked = true;
-
-  saved_notes_display();
-} else {
-  document.getElementById("fetchnote").checked = false;
+if(document.getElementById("fetchnote"))
+{
+  if (fetchnote_value == "true") {
+    document.getElementById("fetchnote").checked = true;
+     
+    saved_notes_display();
+  } else {
+    document.getElementById("fetchnote").checked = false;
+  }
 }
+
 function switch_state() {
   if (!document.getElementById("fetchnote").checked) {
     localStorage.setItem("fetchnote", false);
@@ -23,6 +31,8 @@ function switch_state() {
 }
 function save_to_local(checker, title, data) {
   //this function will save data to local storage
+  document.getElementById("note_title").value="";
+  document.getElementById("note_data").value="";
   if (checker) {
     let dict = {};
     dict[title] = data;
@@ -86,7 +96,7 @@ function error_message_shower(title ="", data ="") {
     t_el = document
       .getElementById("note_title")
       .setAttribute("style", "border: 1px solid green;");
-      
+
     derror.innerHTML = ""
     d_el = document
       .getElementById("note_data")
@@ -310,15 +320,37 @@ function note_search(e) {
 
 function edit_note(id)
 {
-  title = document.getElementById("note_title");
+  ntitle = document.getElementById("note_title");
   
   data = document.getElementById("note_data");
   
   note = document.getElementById(id).children[0].children[1];
   
-  title.value=note.children[0].innerText;
-  data.value = note.children[1].innerText;
+  ntitle.value=note.children[0].innerText;
+  let notesObj = JSON.parse(localStorage.getItem("notes"));
+  try
+  {
+    notesObj.forEach(function note_data_extractor(note, ind) {
+      for (var title in note) {
+         
+        if (ntitle.value==title) {
+          ndata = note[title];
+          console.log(ndata)
+          throw "found";
+                   
+        }
+      }
+    });
+  }
+  catch(err)
+  {
+    data.value = ndata;
+  }
+  
+    
+
   msg="Note is in edit mode now. Don't left without saving this note otherwise it will be lost."
+
   notedelete(id,note.children[0].innerText,msg);
 
 }

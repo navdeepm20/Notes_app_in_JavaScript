@@ -1,3 +1,7 @@
+body
+{
+    padding-right: 0px !important;
+}
 .main-container
 {
     max-width: 60%;

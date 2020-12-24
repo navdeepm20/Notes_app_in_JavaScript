@@ -1,5 +1,7 @@
 /////////////////// getting the note container/////////////////
 main_container = document.querySelector(".note_container");
+
+////////////////making storenote as a default and unchangeble option/////////////////
 document.getElementById("storenote").checked=true;
 document.getElementById("storenote").disabled=true;
 ///////////////////////fetching the value on startup////////////////
@@ -7,6 +9,7 @@ fetchnote_value = localStorage.getItem("fetchnote");
 
 if (fetchnote_value == "true") {
   document.getElementById("fetchnote").checked = true;
+
   saved_notes_display();
 } else {
   document.getElementById("fetchnote").checked = false;
@@ -36,25 +39,58 @@ function save_to_local(checker, title, data) {
     }
   }
 }
-function error_message_shower(title = 0, data = 0) {
+function error_message_shower(title ="", data ="") {
   ////////////error message shower
-  if (title) {
-    terror = document.getElementById("title_error");
+  terror = document.getElementById("title_error");
+  derror = document.getElementById("data_error");
+  if (title!="" && data!="") {
+   
+    terror.innerHTML = title;
+    terror.setAttribute("style", "color: red; font-size: 12px;");
+    t_el = document
+      .getElementById("note_title")
+      .setAttribute("style", "border: 1px solid red;");
+    derror.innerHTML = data;
+    derror.setAttribute("style", "color: red; font-size: 12px;");
+    d_el = document
+      .getElementById("note_data")
+      .setAttribute("style", "border: 1px solid red;");
+  }
+  else if(title!="" && data=="")
+  {
+    derror.innerHTML = data;
+    d_el = document
+      .getElementById("note_data")
+      .setAttribute("style", "border: 1px solid green;");
     terror.innerHTML = title;
     terror.setAttribute("style", "color: red; font-size: 12px;");
     t_el = document
       .getElementById("note_title")
       .setAttribute("style", "border: 1px solid red;");
   }
-
-  if (data) {
-    derror = document.getElementById("data_error");
-
+  else if (title=="" && data!="") {
+    
+    terror.innerHTML = ""
+    t_el = document
+      .getElementById("note_title")
+      .setAttribute("style", "border: 1px solid green;");
     derror.innerHTML = data;
     derror.setAttribute("style", "color: red; font-size: 12px;");
     d_el = document
       .getElementById("note_data")
       .setAttribute("style", "border: 1px solid red;");
+  }
+  else if (title=="" && data=="") {
+    
+    terror.innerHTML = ""
+    t_el = document
+      .getElementById("note_title")
+      .setAttribute("style", "border: 1px solid green;");
+      
+    derror.innerHTML = ""
+    d_el = document
+      .getElementById("note_data")
+      .setAttribute("style", "border: 1px solid green;");
   }
 }
 //main function which check for the value and wil raise error if founc empty
@@ -64,21 +100,30 @@ function data_validator() {
   storenote = document.getElementById("storenote").checked;
   document.getElementById("note_title");
 
-  if (title_el == "") {
-    error_message_shower("Note Title Can't Empty", false);
+  if (title_el == "" && data_el == "") {
+  
+    error_message_shower("Note Title Can't Empty", "Note Data Can't be Empty");
   }
-  if (data_el == "") {
-    error_message_shower(false, "Note Data Can't be Empty");
-  } else {
+  else if (title_el == "" && data_el != "") {
+    error_message_shower("Note Title Can't Empty","");
+  } 
+  else if (title_el != "" && data_el == "") {
+    
+    error_message_shower("", "Note Data Can't be Empty");
+  } 
+  else {
     if(unique_notes_verifier())
-    {add_note(title_el, data_el);
-    save_to_local(storenote, title_el, data_el);}
+    {
+    add_note(title_el, data_el);
+    save_to_local(storenote, title_el, data_el);
+    alert_shower("success", "Note Added Succesfully");
+    }
   }
 }
 //////////////add note fuction ////////////////////////
 function add_note(title_el, data_el) {
   notes_count = document.querySelectorAll(".note").length; // returns total created notes
-
+  
   note_card = document.createElement("div");
   note_card.className = "note";
   note_card.id = `${notes_count + 1}`; //for giving unique id to every note
@@ -104,12 +149,14 @@ function add_note(title_el, data_el) {
     </div>`;
 
   document.getElementById(`${notes_count + 1}`).innerHTML = html; //adding the html for the proper view
-  alert_shower("success", "Note Added Succesfully");
+ 
 }
+
+
 //////////////////////the delete function. This will remove note from dom and also from localstorage if the note is previously saved in local storage ////////////////////
-function notedelete(id, title) {
+function notedelete(id, title,msg="") {
   el = document.getElementById(id);
-  // note_title = el.children[0].children[1].children[0].innerHTML;
+  
   el.remove();
   let notes_array = JSON.parse(localStorage.getItem("notes"));
   temp = notes_array;
@@ -123,8 +170,15 @@ function notedelete(id, title) {
     return false;
   });
   localStorage.setItem("notes", JSON.stringify(notes_array));
+  if(msg!="")
+  {
+    alert_shower("success",msg);
+  }
+  else
   alert_shower("success", "No deleted Succesfully");
 }
+
+
 ///////////////////////saved notes display//////////////////////////
 function saved_notes_display() {
   let noteselm = JSON.parse(localStorage.getItem("notes"));
@@ -135,15 +189,22 @@ function saved_notes_display() {
   all_note_in_dom.forEach(function (note, ind) {
     all_dom_notes_title.push(note.innerHTML);
   });
-
+  
+  if(all_notes_in_dom.length > 0)
+  {
+    alert_shower("success", "Notes Already Added");
+    return;
+    
+  }
   if (!noteselm.length) {
+    
     alert_shower("danger", "No Notes Found");
   } else {
     notesObj = noteselm;
 
     notesObj.forEach(function note_data_extractor(note, ind) {
       for (var title in note) {
-        let chk = 0;
+      
         if (!all_dom_notes_title.length) {
           data = note[title];
           add_note(title, data);
@@ -151,16 +212,14 @@ function saved_notes_display() {
       }
     });
   }
-  if(all_dom_notes_title.length)
-  {
-    alert_shower("success", "Notes Already Added");
-  }
+  alert_shower("success", "Note Added Succesfully");
 }
+ /////////////////////verify if it is in local storage///////////////////
 function unique_notes_verifier() {
   
   input = document.getElementById("note_title").value;
   
-    /////////////////////verify if it is in dom///////////////////
+   
   let noteselm = JSON.parse(localStorage.getItem("notes"));
   try
   {
@@ -199,10 +258,12 @@ function unique_notes_verifier() {
     
 }
 //////////////////this will clear your local storage////////////////////
+
 function localStorage_clear() {
   localStorage.clear();
   alert_shower("danger", "Local Storage Cleared");
 }
+
 ///////////////////bootstrap alert shower/////////////////////////////
 function alert_shower(type, msg) {
   el = document.getElementById("alert");
@@ -218,13 +279,19 @@ function alert_shower(type, msg) {
   seconds = 1;
 
   let interval_id = setInterval(function () {
-    if (seconds == 5) {
+    
+    if (seconds == 8) 
+    {
       el.style.display = "none";
       clearInterval(interval_id);
-    } else {
+    } 
+    else 
+    {
+      
       seconds += 1;
+      
     }
-  }, 1000);
+  },1000);
 }
 ////////////////////////////////search function///////////////////////////////
 
@@ -235,7 +302,6 @@ function note_search(e) {
   for (i = 0; i < cards.length; i++) {
     if (cards[i].innerHTML.toLowerCase().indexOf(input) > -1) {
       cards[i].parentNode.parentNode.style.display = "";
-      console.log(cards[i].parentNode.parentNode);
     } else {
       cards[i].parentNode.parentNode.style.display = "none";
     }
@@ -252,33 +318,11 @@ function edit_note(id)
   
   title.value=note.children[0].innerText;
   data.value = note.children[1].innerText;
-  
-  addbtn = document.getElementById("addbtn");
- 
-  savebtn = document.createElement('button');
-  savebtn.innerHTML="Save Note"
-  savebtn.setAttribute('id',"savebtn")
-  savebtn.setAttribute('class',"btn btn-dark")
-  savebtn.setAttribute('onclick',"edit_save()")
-  addbtn.replaceWith(savebtn);
-  
-  
- 
-  
+  msg="Note is in edit mode now. Don't left without saving this note otherwise it will be lost."
+  notedelete(id,note.children[0].innerText,msg);
 
 }
-function edit_save()
-{
-  oldnote = document.getElementById(id).children[0];
-  title = document.getElementById("note_title").value;
-  
-  data = document.getElementById("note_data").value;
-  let noteselm = JSON.parse(localStorage.getItem("notes"));
-  console.log(noteselm)
-  savebtn.replaceWith(addbtn)
 
-
-}
 //////////////////////////////////////text transition using anime.js/////////////////////////////////////////
 
 var textWrapper = document.querySelector(".ml3");

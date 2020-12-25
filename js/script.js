@@ -1,6 +1,6 @@
 /////////////////// getting the note container/////////////////
 main_container = document.querySelector(".note_container");
-
+var global_note_id = 0;
 ////////////////making storenote as a default and unchangeble option/////////////////
 if(document.getElementById("storenote"))
 {
@@ -122,6 +122,7 @@ function data_validator() {
     error_message_shower("", "Note Data Can't be Empty");
   } 
   else {
+   
     if(unique_notes_verifier())
     {
     add_note(title_el, data_el);
@@ -132,6 +133,19 @@ function data_validator() {
 }
 //////////////add note fuction ////////////////////////
 function add_note(title_el, data_el) {
+  
+  if(global_note_id!=0)
+  {
+    note_body = document.getElementById(global_note_id).children[0].children[1];
+    note_body.children[0].innerHTML = title_el;
+    note_body.children[1].innerHTML = data_el.slice(0,30)+"...";
+    global_note_id = 0;
+    
+  }
+  else
+  {
+
+ 
   notes_count = document.querySelectorAll(".note").length; // returns total created notes
   
   note_card = document.createElement("div");
@@ -159,15 +173,19 @@ function add_note(title_el, data_el) {
     </div>`;
 
   document.getElementById(`${notes_count + 1}`).innerHTML = html; //adding the html for the proper view
+  }
  
 }
 
 
 //////////////////////the delete function. This will remove note from dom and also from localstorage if the note is previously saved in local storage ////////////////////
-function notedelete(id, title,msg="") {
-  el = document.getElementById(id);
+function notedelete(id=0, title,msg="") {
+  if(id!=0)
+  {
+    el = document.getElementById(id);
+    el.remove();
+  }
   
-  el.remove();
   let notes_array = JSON.parse(localStorage.getItem("notes"));
   temp = notes_array;
   temp.forEach(function key_popper(ab, ind) {
@@ -231,41 +249,44 @@ function unique_notes_verifier() {
   
    
   let noteselm = JSON.parse(localStorage.getItem("notes"));
-  try
+  if(noteselm)
   {
-    noteselm.forEach(function note_data_extractor(note, ind) {
-      for (var title in note) 
-      {
+    try
+    {
+      noteselm.forEach(function note_data_extractor(note, ind) {
+        for (var title in note) 
+        {
+                
+            if(title.toLowerCase()==input.toLowerCase())
+            {
               
-          if(title.toLowerCase()==input.toLowerCase())
-          {
+              error_message_shower("Title Already Exist");
+              throw "Title Already Exist"
+              
             
-            error_message_shower("Title Already Exist");
-            throw "Title Already Exist"
-            
-           
-          }
-      }
-      });
-      terror = document.getElementById("title_error");
-    
-    terror.innerHTML = "";
-    terror.setAttribute("style", "color: red; font-size: 12px;");
-    t_el = document
-      .getElementById("note_title")
-      .setAttribute("style", "border: 1px solid green;");
-    document
-      .getElementById("note_data")
-      .setAttribute("style", "border: 1px solid green;");
-     
-    return true;
+            }
+        }
+        });
+        terror = document.getElementById("title_error");
+      
+      terror.innerHTML = "";
+      terror.setAttribute("style", "color: red; font-size: 12px;");
+      t_el = document
+        .getElementById("note_title")
+        .setAttribute("style", "border: 1px solid green;");
+      document
+        .getElementById("note_data")
+        .setAttribute("style", "border: 1px solid green;");
+      
+      return true;
+    }
+    catch(err)
+    {
+          return false;
+    }
   }
-  catch(err)
-  {
-        return false;
-  }
-    
-    
+  else
+  return true;  
 }
 //////////////////this will clear your local storage////////////////////
 
@@ -320,6 +341,8 @@ function note_search(e) {
 
 function edit_note(id)
 {
+  global_note_id = id;
+  
   ntitle = document.getElementById("note_title");
   
   data = document.getElementById("note_data");
@@ -333,11 +356,10 @@ function edit_note(id)
     notesObj.forEach(function note_data_extractor(note, ind) {
       for (var title in note) {
          
-        if (ntitle.value==title) {
-          ndata = note[title];
-          console.log(ndata)
-          throw "found";
-                   
+        if (ntitle.value==title) 
+        {
+          ndata = note[title];  
+          throw "found";           
         }
       }
     });
@@ -351,7 +373,7 @@ function edit_note(id)
 
   msg="Note is in edit mode now. Don't left without saving this note otherwise it will be lost."
 
-  notedelete(id,note.children[0].innerText,msg);
+  notedelete(0,note.children[0].innerText,msg);
 
 }
 

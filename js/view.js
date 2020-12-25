@@ -81,5 +81,5 @@ function saved_notes_display2() {
         }
       });
     }
-    alert_shower("success", "Note Added Succesfully");
+    
   }

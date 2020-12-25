@@ -23,7 +23,7 @@
 # Site Preview
 
 <p align="center">
- <img height="550px" width="800px" src="https://github.com/navdeepm20/Photo_Background_Remover_Gui/blob/master/sample/backgroundremover.png">
+ <img height="640px" width="340px" src="https://github.com/navdeepm20/Notes_app_in_JavaScript/blob/master/samples/sample.png">
 </p>
 
 # Live Preview

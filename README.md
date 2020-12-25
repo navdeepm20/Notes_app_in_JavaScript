@@ -22,7 +22,7 @@
 
 # Site Preview
 
-<p align="center">
+<p align="left">
  <img height="640px" width="340px" src="https://github.com/navdeepm20/Notes_app_in_JavaScript/blob/master/samples/sample.png">
 </p>
 

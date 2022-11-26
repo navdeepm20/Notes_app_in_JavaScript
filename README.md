@@ -27,7 +27,8 @@
 </p>
 
 # Live Preview
-<a href="https://notefizz.netlify.app/"><h3>Click Here to Check Live Preview</h3></a>😊
+[Click Herer For Live Preview](https://notefizz.netlify.app)
+
  
 # How to get started?
  
